@@ -16,13 +16,13 @@ class LotteryTest {
 		val category2 = Category(name = "EW", odds = .25F)
 		val category3 = Category(name = "HA", odds = .25F)
 
-		val populationGroup1 = PopulationGroup(category2)
-		val populationGroup2 = PopulationGroup(category3)
-		val populationGroup3 = PopulationGroup(category2, category3)
-		val populationGroup4 = PopulationGroup(category1)
-		val populationGroup5 = PopulationGroup(category1, category2)
-		val populationGroup6 = PopulationGroup(category1, category3)
-		val populationGroup7 = PopulationGroup(category1, category2, category3)
+		val populationGroup1 = PopulationGroup(setOf(category2))
+		val populationGroup2 = PopulationGroup(setOf(category3))
+		val populationGroup3 = PopulationGroup(setOf(category2, category3))
+		val populationGroup4 = PopulationGroup(setOf(category1))
+		val populationGroup5 = PopulationGroup(setOf(category1, category2))
+		val populationGroup6 = PopulationGroup(setOf(category1, category3))
+		val populationGroup7 = PopulationGroup(setOf(category1, category2, category3))
 
 		lottery = Lottery(globalSupply = 60, globalDemand = 15)
 
