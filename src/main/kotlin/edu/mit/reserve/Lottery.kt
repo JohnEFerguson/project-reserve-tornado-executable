@@ -3,6 +3,7 @@ package edu.mit.reserve
 import edu.mit.reserve.models.Category
 import edu.mit.reserve.models.Patient
 import edu.mit.reserve.models.PopulationGroup
+import kotlin.random.Random
 
 class Lottery(
 	private val globalSupply: Int,
@@ -64,7 +65,17 @@ class Lottery(
 
 	}
 
-	fun processPatient(patient: Patient) {
+	fun processPatient(patient: Patient): Boolean {
+
+		val firstLotteryNumber = Random.nextDouble(until = firstBiteLotteryScale.toDouble())
+
+		var firstCutoff = if (patient.populationGroup.categories.contains(firstLotteryCategory)) firstLotteryCategoryCutoff else nonFirstLotteryCategoryCutoff
+
+		if (firstLotteryNumber < firstCutoff) return true
+
+		val secondLotteryNumber = Random.nextDouble(until = secondBiteLotteryScale.toDouble())
+
+		return secondLotteryNumber < secondLotteryCutoffs[patient.populationGroup]!! // should throw exception here
 	}
 
 }
