@@ -1,7 +1,7 @@
 package edu.mit.reserve.models
 
 class PopulationGroup(
-	private val categories: Set<Category> = setOf()
+	val categories: Set<Category> = setOf()
 ) {
 
 	// TODO: implement these for mapping in lottery
