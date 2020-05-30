@@ -85,8 +85,9 @@ class Lottery(
 	}
 
 
-	fun getfirstLotteryCategoryCutoff(): Double = this.firstLotteryCategoryCutoff
+	fun getFirstLotteryCategoryCutoff(): Double = this.firstLotteryCategoryCutoff
 	fun getNonFirstLotteryCategoryCutoff(): Double = this.nonFirstLotteryCategoryCutoff
 	fun getPg(): Double = this.pg
+	fun getPopulationGroupCutoff(group: PopulationGroup): Double = this.secondLotteryCutoffs[group]!! // Todo: should throw exception here
 }
 
