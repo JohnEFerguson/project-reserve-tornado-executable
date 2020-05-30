@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 on:
@@ -12,11 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Runs a set of commands using the runners shell
     - name: Build the jar
       run: |
-        echo Building a jar
+        echo Building a jar...
         ./gradlew jar
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run unit tests
+        run: |
+          echo Running unit tests...
+          ./gradlew test
