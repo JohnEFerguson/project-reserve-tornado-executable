@@ -12,12 +12,12 @@ class Lottery(
 	private val firstLotteryCategory: Category
 ) {
 
-	private var pg = 0.0F
+	private var pg = 0.0
 	private val firstBiteLotteryScale = 1000
 	private val secondBiteLotteryScale = 1000
-	private var firstLotteryCategoryCutoff = 0.0F
-	private var nonFirstLotteryCategoryCutoff = 0.0F
-	private val secondLotteryCutoffs = HashMap<PopulationGroup, Float>()
+	private var firstLotteryCategoryCutoff = 0.0
+	private var nonFirstLotteryCategoryCutoff = 0.0
+	private val secondLotteryCutoffs = HashMap<PopulationGroup, Double>()
 
 	fun addPopulationGroupDemand(populationGroup: PopulationGroup, demand: Int) {
 		populationGroupDemands[populationGroup] = demand
@@ -25,24 +25,30 @@ class Lottery(
 
 	fun calculatePg() {
 
-		var quotient = 1.0F
+		var quotient = 0.0
+
+		var sumPopulationGroupDemand = 0
 
 		for ((populationGroup, demand) in populationGroupDemands) {
 
-			var quotientTerm = 1.0F
+			var quotientTerm = 1.0
 			for (category in populationGroup.categories) {
 				quotientTerm += category.odds
 			}
 
+			sumPopulationGroupDemand += demand
+
 			quotient += quotientTerm * demand
 		}
+
+		quotient += (globalDemand - sumPopulationGroupDemand)
 
 		pg = globalSupply / quotient
 	}
 
 	fun calculateCutoffs() {
 
-		firstLotteryCategoryCutoff = 1.0F + firstLotteryCategory.odds * pg * firstBiteLotteryScale
+		firstLotteryCategoryCutoff = (1.0 + firstLotteryCategory.odds) * pg * firstBiteLotteryScale
 		nonFirstLotteryCategoryCutoff = pg * firstBiteLotteryScale
 
 		for (populationGroup in populationGroupDemands.keys) {
@@ -53,11 +59,11 @@ class Lottery(
 
 			cutoff /= firstBiteLotteryScale
 
-			var categoryOddsSum = 1.0F
+			var categoryOddsSum = 1.0
 
 			populationGroup.categories.forEach { categoryOddsSum += it.odds }
 
-			cutoff = ((categoryOddsSum * pg) - cutoff) / (1.0F - firstLotteryCutoff / firstBiteLotteryScale) * secondBiteLotteryScale
+			cutoff = ((categoryOddsSum * pg) - cutoff) / (1.0 - firstLotteryCutoff / firstBiteLotteryScale) * secondBiteLotteryScale
 
 			secondLotteryCutoffs[populationGroup] = cutoff
 		}
@@ -78,5 +84,9 @@ class Lottery(
 		return secondLotteryNumber < secondLotteryCutoffs[patient.populationGroup]!! // should throw exception here
 	}
 
+
+	fun getfirstLotteryCategoryCutoff(): Double = this.firstLotteryCategoryCutoff
+	fun getNonFirstLotteryCategoryCutoff(): Double = this.nonFirstLotteryCategoryCutoff
+	fun getPg(): Double = this.pg
 }
 
