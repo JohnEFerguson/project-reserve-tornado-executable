@@ -24,7 +24,7 @@ class LotteryTest {
 		val populationGroup6 = PopulationGroup(setOf(category1, category3))
 		val populationGroup7 = PopulationGroup(setOf(category1, category2, category3))
 
-		lottery = Lottery(globalSupply = 60, globalDemand = 15)
+		lottery = Lottery(globalSupply = 60, globalDemand = 15, firstLotteryCategory = category1)
 
 		lottery.addPopulationGroupDemand(populationGroup1, 12)
 		lottery.addPopulationGroupDemand(populationGroup2, 24)
