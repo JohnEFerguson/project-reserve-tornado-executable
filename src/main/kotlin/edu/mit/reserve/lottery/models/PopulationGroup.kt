@@ -1,4 +1,4 @@
-package edu.mit.reserve.models
+package edu.mit.reserve.lottery.models
 
 class PopulationGroup(
 	val categories: Set<Category> = setOf()

@@ -26,8 +26,15 @@ repositories {
 
 dependencies {
 	implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile group: 'junit', name: 'junit', version:'4.12'
+	compile group: 'no.tornado', name: 'tornadofx', version: '1.7.20'
+	compile group: 'org.openjfx', name: 'javafx', version: '11', ext: 'pom'
+	testCompile group: 'junit', name: 'junit', version:'4.12'
 }
+
+compileKotlin {
+	kotlinOptions.jvmTarget= 1.8
+}
+
 
 kapt {
 	correctErrorTypes = true
@@ -37,7 +44,7 @@ version '0.0.1'
 
 jar {
 	manifest {
-		attributes 'Main-Class': 'edu.mit.reserve.Driver'
+		attributes 'Main-Class': 'edu.mit.reserve.ui.Driver'
 	}
 
 	from {
