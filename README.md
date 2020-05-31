@@ -14,10 +14,13 @@ auto-import tasks to the Gradle Tool Window.  To run the following commands in I
 under 'Tasks' in the Gradle Tool Window.
 
 #### Build jar
-To build a jar with packaged binaries: `./gradlew clean jar` 
+To build a fat jar with packaged binaries: `./gradlew jar` 
 
 #### Run tests
 To run JUnit tests: `./gradlew test` 
+
+#### Run executable program
+To run exectuable program: `./gradlew clean build run` 
 
 ## Contributing
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to submit pull requests and log issues.

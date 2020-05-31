@@ -34,3 +34,18 @@ kapt {
 }
 
 version '0.0.1'
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'edu.mit.reserve.Driver'
+	}
+
+	from {
+		configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
+
+task run(type:Exec) {
+	commandLine './run-app.sh'
+}
+
