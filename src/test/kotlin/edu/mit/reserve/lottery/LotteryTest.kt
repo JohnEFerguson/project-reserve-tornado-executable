@@ -1,7 +1,7 @@
-package edu.mit.reserve
+package edu.mit.reserve.lottery
 
-import edu.mit.reserve.models.Category
-import edu.mit.reserve.models.PopulationGroup
+import edu.mit.reserve.lottery.models.Category
+import edu.mit.reserve.lottery.models.PopulationGroup
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

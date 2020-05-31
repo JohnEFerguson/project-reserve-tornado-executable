@@ -8,19 +8,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest, macOS-latest, windows-latest]
+        java-version: [8]
     steps:
     - uses: actions/checkout@v2
     - name: Build the jar
       run: |
         echo Building a jar...
+        sudo apt-get install openjfx
         ./gradlew jar
 
   test:
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest, macOS-latest, windows-latest]
+        java-version: [8]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run unit tests
         run: |
           echo Running unit tests...
+          sudo apt-get install openjfx
           ./gradlew test
