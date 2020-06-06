@@ -4,12 +4,20 @@ import java.time.LocalDate
 
 
 class Patient(
-	private val id: String,
-	private val name: String,
-	private var populationGroup: PopulationGroup,
-	private val date: LocalDate
+	val id: String,
+	val name: String,
+	var populationGroup: PopulationGroup,
+	val date: LocalDate
 ) {
 
-	fun getPopulationGroup() = this.populationGroup
-	fun setPopulationGroup(populationGroup: PopulationGroup) { this.populationGroup = populationGroup }
+	var firstLotteryNumber = -1.0
+	var secondLotteryNumber = -1.0
+
+	var firstLotteryResult = false
+	var secondLotteryResult = false
+	var shouldRunSecondLottery = false
+	var hasRunFirstLottery = false
+	var hasRunSecondLottery = false
+	var accepted = false
+	var chosenToAcceptOrNot = false
 }

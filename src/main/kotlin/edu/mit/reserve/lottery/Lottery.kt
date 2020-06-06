@@ -4,9 +4,12 @@ import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.lottery.models.Patient
 import edu.mit.reserve.lottery.models.PopulationGroup
 import edu.mit.reserve.lottery.utils.generatePopulationGroups
-import java.lang.IllegalArgumentException
+import edu.mit.reserve.lottery.utils.roundDouble
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
 import java.time.LocalDate
 import kotlin.random.Random
+
 
 class Lottery(
 	private var globalSupply: Int = 0,
@@ -15,7 +18,10 @@ class Lottery(
 	private var firstLotteryCategory: Category = Category("foo", 0.0)
 ) {
 
-	private val patients = mutableListOf<Patient>()
+	private val log: Logger = LogManager.getLogger(Lottery::class.java)
+
+	private val patientToFirstLotteryResults = HashMap<Patient, Boolean>()
+	private val patientToSecondLotteryResults = HashMap<Patient, Boolean>()
 	private val categories = mutableListOf<Category>()
 	private val nameCategoryMapping = HashMap<String, Category>()
 
@@ -29,6 +35,7 @@ class Lottery(
 	private var firstLotteryCategoryCutoff = 0.0
 	private var nonFirstLotteryCategoryCutoff = 0.0
 	private val secondLotteryCutoffs = HashMap<PopulationGroup, Double>()
+	private val patients = mutableListOf<Patient>()
 
 	fun addPopulationGroupDemand(populationGroup: PopulationGroup, demand: Int) {
 		populationGroupDemands[populationGroup] = demand
@@ -77,23 +84,29 @@ class Lottery(
 			cutoff = ((categoryOddsSum * pg) - cutoff) / (1.0 - firstLotteryCutoff / firstBiteLotteryScale) * secondBiteLotteryScale
 
 			secondLotteryCutoffs[populationGroup] = cutoff
+			populationGroup.secondCutoff = if (populationGroup.involvedInSecondLottery) roundDouble(cutoff).toString() else ""
+			populationGroup.firstCutoff = if (populationGroup.categories.contains(firstLotteryCategory)) roundDouble(firstLotteryCategoryCutoff).toString() else roundDouble(nonFirstLotteryCategoryCutoff).toString()
 		}
 
 
 	}
 
-	fun processPatient(patient: Patient): Boolean {
+	fun firstLottery(patient: Patient): Boolean {
 
-		val firstLotteryNumber = Random.nextDouble(until = firstBiteLotteryScale.toDouble())
+		patient.firstLotteryNumber = Random.nextDouble(until = firstBiteLotteryScale.toDouble())
 
-		var firstCutoff = if (patient.getPopulationGroup().categories.contains(firstLotteryCategory)) firstLotteryCategoryCutoff else nonFirstLotteryCategoryCutoff
+		val firstCutoff = if (patient.populationGroup.categories.contains(firstLotteryCategory)) firstLotteryCategoryCutoff else nonFirstLotteryCategoryCutoff
 
-		if (firstLotteryNumber < firstCutoff) return true
-
-		val secondLotteryNumber = Random.nextDouble(until = secondBiteLotteryScale.toDouble())
-
-		return secondLotteryNumber < secondLotteryCutoffs[patient.getPopulationGroup()]!!
+		return patient.firstLotteryNumber < firstCutoff
 	}
+
+	fun secondLottery(patient: Patient): Boolean {
+
+		patient.secondLotteryNumber = Random.nextDouble(until = secondBiteLotteryScale.toDouble())
+
+		return patient.secondLotteryNumber < getPopulationGroupCutoff(patient.populationGroup)
+	}
+
 
 	fun addCategory(name: String, oddsPercentage: Int) {
 		val newCategory = Category(name = name, odds = oddsPercentage.toDouble() / 100.0)
@@ -102,9 +115,15 @@ class Lottery(
 
 	}
 
-	fun addPatient(id: String, name: String, categories: Set<Category>, date: LocalDate) {
-		patients.add(Patient(id, name, PopulationGroup(categories), date))
+	fun addPopulationGroup(categoryNames: Set<String>, demand: Int) {
 
+		val categories = mutableSetOf<Category>()
+		categoryNames.forEach { categories.add(nameCategoryMapping[it]!!) }
+		val newPopulationGroup = PopulationGroup(categories)
+		if (categories.size == 1 && categories.contains(firstLotteryCategory))
+			newPopulationGroup.involvedInSecondLottery = false
+		populationGroups.add(newPopulationGroup)
+		populationGroupDemands[newPopulationGroup] = demand
 	}
 
 	fun createPopulationGroups() {
@@ -118,8 +137,6 @@ class Lottery(
 		this.firstLotteryCategory = nameCategoryMapping[name] ?: throw IllegalArgumentException("There must be a category with name $name")
 	}
 
-
-
 	fun getNumCategories() = this.numCategories
 	fun getFirstLotteryCategoryCutoff(): Double = this.firstLotteryCategoryCutoff
 	fun getNonFirstLotteryCategoryCutoff(): Double = this.nonFirstLotteryCategoryCutoff
@@ -127,8 +144,17 @@ class Lottery(
 	fun getPopulationGroupCutoff(group: PopulationGroup): Double = this.secondLotteryCutoffs[group]!! // Todo: should throw exception here
 	fun getCategories() = this.categories
 	fun getPopulationGroups() = this.populationGroups
+	fun getPatients() = this.patients
+	fun getGlobalSupply() = this.globalSupply
+	fun getFirstCategory() = this.firstLotteryCategory
 
-
+	fun clearCategoriesAndGroups() {
+		this.categories.clear()
+		this.populationGroups.clear()
+		this.nameCategoryMapping.clear()
+		this.populationGroupDemands.clear()
+		this.secondLotteryCutoffs.clear()
+	}
 }
 
 
