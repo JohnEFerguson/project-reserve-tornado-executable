@@ -1,7 +1,7 @@
 package edu.mit.reserve.ui
 
-import edu.mit.reserve.ui.views.FirstPage
+import edu.mit.reserve.ui.views.ConfigurationPage
 import tornadofx.*
 
-class Driver: App(FirstPage::class)
+class Driver: App(ConfigurationPage::class)
 

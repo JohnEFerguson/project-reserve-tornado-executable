@@ -27,3 +27,6 @@ fun generatePopulationGroups(categories: List<Category>): MutableList<Population
     return populationGroups
 }
 
+fun roundDouble(x: Double) = Math.round(x * 100.0) / 100.0
+
+

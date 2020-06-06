@@ -1,16 +1,20 @@
 buildscript {
-	ext {
-		kotlinVersion = '1.3.61'
-	}
-	repositories {
-		mavenCentral()
+    ext {
+        kotlinVersion = '1.3.61'
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
+//        classpath "org.beryx:badass-jlink-plugin:2.19.0"
+    }
 
-	}
-	dependencies {
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
-		classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
-	}
 }
 
 
@@ -19,40 +23,42 @@ apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-allopen'
 apply plugin: 'idea'
+//apply plugin: "org.beryx.jlink"
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation "org.jetbrains.kotlin:kotlin-stdlib"
-	compile group: 'no.tornado', name: 'tornadofx', version: '1.7.20'
-	compile group: 'org.openjfx', name: 'javafx', version: '11', ext: 'pom'
-	testCompile group: 'junit', name: 'junit', version:'4.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    compile group: 'no.tornado', name: 'tornadofx', version: '1.7.20'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
 }
 
 compileKotlin {
-	kotlinOptions.jvmTarget= 1.8
+    kotlinOptions.jvmTarget = 1.8
 }
 
 
 kapt {
-	correctErrorTypes = true
+    correctErrorTypes = true
 }
 
 version '0.0.1'
 
 jar {
-	manifest {
-		attributes 'Main-Class': 'edu.mit.reserve.ui.Driver'
-	}
+    manifest {
+        attributes 'Main-Class': 'edu.mit.reserve.ui.Driver'
+    }
 
-	from {
-		configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-	}
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
-task run(type:Exec) {
-	commandLine './run-app.sh'
+task run(type: Exec) {
+    commandLine './run-app.sh'
 }
 
