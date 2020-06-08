@@ -120,7 +120,7 @@ class Lottery(
 		val categories = mutableSetOf<Category>()
 		categoryNames.forEach { categories.add(nameCategoryMapping[it]!!) }
 		val newPopulationGroup = PopulationGroup(categories)
-		if (categories.size == 1 && categories.contains(firstLotteryCategory))
+		if ((categories.size == 1 && categories.contains(firstLotteryCategory)) || categories.size == 0)
 			newPopulationGroup.involvedInSecondLottery = false
 		populationGroups.add(newPopulationGroup)
 		populationGroupDemands[newPopulationGroup] = demand

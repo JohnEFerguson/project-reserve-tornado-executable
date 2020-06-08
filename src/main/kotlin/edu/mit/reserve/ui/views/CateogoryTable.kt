@@ -1,8 +1,10 @@
 package edu.mit.reserve.ui.views
 
 import edu.mit.reserve.ui.controllers.ConfigurationController
+import edu.mit.reserve.ui.views.Styles.Companion.center
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.scene.text.TextAlignment
 import tornadofx.*
 
 class CateogoryTable: View() {
@@ -21,6 +23,10 @@ class CateogoryTable: View() {
 			items = configurationController.categories
 
 			isEditable = true
+
+			style {
+				textAlignment = TextAlignment.CENTER
+			}
 
 			column("Name", Category::name).makeEditable().remainingWidth()
 			column("Odds", Category::odds).contentWidth(40.0, true, false).cellFragment(CategoryTableNumberEditor::class)

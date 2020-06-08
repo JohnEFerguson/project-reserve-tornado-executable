@@ -35,8 +35,6 @@ class ConfigurationController : Controller() {
 			for (i in categoryList.size until it.toInt())
 				categoryList.add(Category("", "0", false))
 
-			println("numCategories Change")
-
 			categories.value = observableListOf(categoryList)
 		}
 

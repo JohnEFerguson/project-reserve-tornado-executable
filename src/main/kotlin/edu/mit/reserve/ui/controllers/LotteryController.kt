@@ -32,16 +32,11 @@ class LotteryController: Controller() {
 	fun addCategory(name: String, oddsPercentage: Int) { lottery.addCategory(name, oddsPercentage) }
 	fun addPopulationGroup(categoryNames: Set<String>, demand: Int) { lottery.addPopulationGroup(categoryNames, demand)}
 
-	fun shouldRunSecondLottery(patient: Patient): Boolean {
-		return !patient.firstLotteryResult && (patient.populationGroup.categories.size > 1 || !patient.populationGroup.categories.contains(this.getFirstCategory()))
-	}
-
-
 	fun addPatient(id: String, name: String, categories: Set<Category>, date: LocalDate) {
 
 		val newPatient = Patient(id, name, edu.mit.reserve.lottery.models.PopulationGroup(categories), date)
 		newPatient.firstLotteryResult = lottery.firstLottery(newPatient)
-		newPatient.secondLotteryResult = this.shouldRunSecondLottery(newPatient) && lottery.secondLottery(newPatient)
+		newPatient.secondLotteryResult = newPatient.populationGroup.categories.isNotEmpty() && newPatient.populationGroup.involvedInSecondLottery && lottery.secondLottery(newPatient)
 		val curPatients = patients.toMutableList()
 		curPatients.add(newPatient)
 		patients.value = curPatients.toObservable()
