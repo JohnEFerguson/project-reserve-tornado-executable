@@ -1,6 +1,6 @@
 # project-reserve
 
-The versioned jar can then be found in the `build/libs` folder.
+
 An executable program which allows a user to perform the reserve lottery process outlined in an April 2020 [paper](http://dx.doi.org/10.2139/ssrn.3569307) circulated by Pathak et al. to allocate the anti-viral drug remdesivir.
 ## Requirements
 * [JDK 8](https://aws.amazon.com/corretto/)
@@ -14,7 +14,7 @@ auto-import tasks to the Gradle Tool Window.  To run the following commands in I
 under 'Tasks' in the Gradle Tool Window.
 
 #### Build jar
-To build a fat jar with packaged binaries: `./gradlew jar` 
+To build a fat jar with packaged binaries: `./gradlew jar`. The versioned jar can then be found in the `build/libs` folder.
 
 #### Run tests
 To run JUnit tests: `./gradlew test` 
