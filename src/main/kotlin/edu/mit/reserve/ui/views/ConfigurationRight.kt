@@ -25,17 +25,7 @@ class ConfigurationRight : View() {
 					padding = box(5.px)
 				}
 
-				button("Submit") {
 
-					enableWhen(model.valid.and(categoryListModel.valid).and(populationGroupListModel.valid))
-
-					action {
-						configurationController.submit(model.numPatients.value.toInt(),
-							model.numCoursesAvailable.value.toInt(), model.numCategories.value.toInt())
-						find<ConfigurationPage>().close()
-						find<LotteryPage>().openWindow()
-					}
-				}
 			}
 
 

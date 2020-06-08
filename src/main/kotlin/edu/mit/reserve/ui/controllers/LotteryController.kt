@@ -3,6 +3,7 @@ package edu.mit.reserve.ui.controllers
 import edu.mit.reserve.lottery.Lottery
 import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.lottery.models.Patient
+import edu.mit.reserve.lottery.models.PopulationGroup
 import edu.mit.reserve.lottery.utils.roundDouble
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
@@ -34,7 +35,12 @@ class LotteryController: Controller() {
 
 	fun addPatient(id: String, name: String, categories: Set<Category>, date: LocalDate) {
 
-		val newPatient = Patient(id, name, edu.mit.reserve.lottery.models.PopulationGroup(categories), date)
+		var populationGroup = PopulationGroup(categories)
+		lottery.getPopulationGroups().forEach {
+			if (categories.toString() == it.categories.toString()) populationGroup = it
+		}
+
+		val newPatient = Patient(id, name, populationGroup, date)
 		newPatient.firstLotteryResult = lottery.firstLottery(newPatient)
 		newPatient.secondLotteryResult = newPatient.populationGroup.categories.isNotEmpty() && newPatient.populationGroup.involvedInSecondLottery && lottery.secondLottery(newPatient)
 		val curPatients = patients.toMutableList()
@@ -49,6 +55,7 @@ class LotteryController: Controller() {
 		firstLotteryCutoffRows.add(FirstLotteryCutoffRow(lottery.getFirstCategory().toString(), roundDouble(lottery.getFirstLotteryCategoryCutoff()).toString()))
 		firstLotteryCutoffRows.add(FirstLotteryCutoffRow("non-${lottery.getFirstCategory()}", roundDouble(lottery.getNonFirstLotteryCategoryCutoff()).toString()))
 	}
+
 
 	val firstLotteryCutoffRows = mutableListOf<FirstLotteryCutoffRow>().asObservable()
 

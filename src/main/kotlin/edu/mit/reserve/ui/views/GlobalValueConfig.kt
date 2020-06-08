@@ -1,6 +1,5 @@
 package edu.mit.reserve.ui.views
 
-import edu.mit.reserve.ui.controllers.ConfigurationController
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
@@ -8,7 +7,6 @@ import tornadofx.*
 
 class GlobalValueConfig : View() {
 
-	val configurationController: ConfigurationController by inject()
 	val model: GlobalValueConfigValueModel by inject()
 
 
@@ -20,7 +18,7 @@ class GlobalValueConfig : View() {
 		}
 
 		label {
-			text = "Hello and welcome to the Project Reserve starting page. Please enter the relevant inputs below to begin your session.\n\n\n"
+			text = "Project Reserve | Configuration Page\n\n\n"
 			font = Font.font("Cambria", FontWeight.BOLD, 16.0)
 		}
 

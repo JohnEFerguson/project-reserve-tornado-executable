@@ -126,10 +126,6 @@ class Lottery(
 		populationGroupDemands[newPopulationGroup] = demand
 	}
 
-	fun createPopulationGroups() {
-		this.populationGroups = generatePopulationGroups(this.categories)
-	}
-
 	fun setGlobalSupply(globalSupply: Int) { this.globalSupply = globalSupply}
 	fun setGlobalDemand(globalDemand: Int) { this.globalDemand = globalDemand}
 	fun setNumCategories(numCategories:Int) { this.numCategories = numCategories }
