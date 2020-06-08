@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.geometry.Pos
 import javafx.stage.StageStyle
 import tornadofx.*
 import java.time.LocalDate
@@ -20,10 +21,13 @@ class PatientInput : View() {
 	private val date = SimpleObjectProperty<LocalDate>()
 	private val categoryToStatus = HashMap<Category, SimpleBooleanProperty>()
 	val model: GlobalLotteryView by inject()
+	val patientValuesModel: PatientInputFieldsModel by inject()
 
 	override val root = form()
 
 	init {
+
+
 		title = "Patient input"
 
 		with(root) {
@@ -33,16 +37,27 @@ class PatientInput : View() {
 				text = "Input a patient"
 
 				field("Patient Id:") {
-					textfield(patientId)
+					textfield(patientValuesModel.patientId) {
+						validator {
+							if (it.isNullOrBlank()) error("This field cannot be blank.")
+							else null
+						}
+					}
+
 				}
 
 				field("Patient Name:") {
-					textfield(patientName)
+					textfield(patientValuesModel.patientName) {
+						validator {
+							if (it.isNullOrBlank()) error("This field cannot be blank.")
+							else null
+						}
+					}
 				}
 
 
 				field("Date:") {
-					datepicker(date) {
+					datepicker(patientValuesModel.date) {
 						value = LocalDate.now()
 					}
 				}
@@ -58,64 +73,81 @@ class PatientInput : View() {
 				}
 			}
 
-			button("Submit") {
+			vbox(50.0) {
+				button("Submit") {
 
-				action {
+					enableWhen(patientValuesModel.valid)
 
-					val categories = mutableSetOf<Category>()
-					categoryToStatus.keys.forEach {
-						if (categoryToStatus[it]!!.value) categories.add(it)
-					}
-
-					controller.addPatient(patientId.value, patientName.value, categories, date.value)
-					println("Patient Submitted id: ${patientId.value} name: ${patientName.value} categories: $categories date: ${date.value}")
-				}
-			}
+					useMaxWidth = true
 
 
-			label {
-				textProperty().bind(model.numCoursesAvailable)
-			}
+					action {
 
-			label {
-				textProperty().bind(model.numPatients)
-			}
+						val categories = mutableSetOf<Category>()
+						categoryToStatus.keys.forEach {
+							if (categoryToStatus[it]!!.value) categories.add(it)
+						}
 
-
-			borderpane {
-
-				style {
-					padding = box(10.px)
-				}
-
-				left {
-
-					button("Return To Config").action {
-						find<PatientPage>().close()
-						find<ConfigurationPage>().openWindow()
-					}
-
-				}
-
-				center {
-					button("View Cutoffs").action {
-						find<CutoffModalView>().openModal(stageStyle = StageStyle.UTILITY)
+						println(patientValuesModel.patientId.value + " " + patientValuesModel.patientName.value)
+						controller.addPatient(patientValuesModel.patientId.value, patientValuesModel.patientName.value, categories, patientValuesModel.date.value)
 					}
 				}
 
-				right {
+				vbox(5.0) {
 
+					label {
+						textProperty().bind(model.numCoursesAvailable)
+					}
 
-					button("Clear Patient List").action {
-						controller.clearPatients()
-						// reset supply here
+					label {
+						textProperty().bind(model.numPatients)
 					}
 				}
 
+				vbox {
 
+					alignment = Pos.BOTTOM_CENTER
+
+					hbox(spacing = 20.0) {
+
+
+						button("Return To Config") {
+
+							useMaxWidth = true
+
+							tooltip("OHH BABY")
+
+							action {
+								find<PatientPage>().close()
+								find<ConfigurationPage>().openWindow()
+							}
+						}
+
+
+						button("View Cutoffs") {
+
+							useMaxWidth = true
+
+							action {
+								find<CutoffModalView>().openModal(stageStyle = StageStyle.UTILITY)
+							}
+						}
+
+
+
+						button("Clear Patient List") {
+
+							useMaxWidth = true
+
+							action {
+								controller.clearPatients()
+								// reset supply here
+							}
+						}
+					}
+				}
 			}
 		}
-
 	}
 }
 
@@ -130,4 +162,22 @@ class GlobalLottery(numPatients: String, numCoursesAvailable: String) {
 class GlobalLotteryView : ItemViewModel<GlobalLottery>() {
 	val numPatients = bind(GlobalLottery::numPatientsProperty)
 	val numCoursesAvailable = bind(GlobalLottery::numCoursesAvailableProperty)
+}
+
+
+class PatientInputFields(patientId: String, patientName: String, date: LocalDate) {
+	val patientIdProperty by lazy { SimpleStringProperty(patientId) }
+	var patientId by patientIdProperty
+
+	val patientNameProperty by lazy { SimpleStringProperty(patientName) }
+	var patientName by patientNameProperty
+
+	val dateProperty by lazy { SimpleObjectProperty<LocalDate>(date) }
+	var date by dateProperty
+}
+
+class PatientInputFieldsModel : ItemViewModel<PatientInputFields>() {
+	val patientId = bind(PatientInputFields::patientIdProperty)
+	val patientName = bind(PatientInputFields::patientNameProperty)
+	val date = bind(PatientInputFields::dateProperty)
 }

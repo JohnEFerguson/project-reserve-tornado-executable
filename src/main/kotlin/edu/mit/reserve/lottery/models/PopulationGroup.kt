@@ -1,5 +1,8 @@
 package edu.mit.reserve.lottery.models
 
+import kotlin.math.max
+import kotlin.math.min
+
 class PopulationGroup(
 	val categories: Set<Category> = setOf()
 ) {
@@ -11,7 +14,7 @@ class PopulationGroup(
 	override fun toString(): String {
 		var res = ""
 		this.categories.sortedBy { it.name }.forEach { res += it.name  + ", "}
-		return res.substring(0, res.length - 2)
+		return res.substring(0, max(0,res.length - 2))
 	}
 
 	override fun hashCode(): Int = this.toString().hashCode()

@@ -29,6 +29,7 @@ class PatientList : View() {
 				items = controller.patients
 
 				prefWidth = 800.0
+				prefHeight = 560.0
 
 				columnResizePolicy = SmartResize.POLICY
 
@@ -46,7 +47,7 @@ class PatientList : View() {
 						graphic = hbox(spacing = 5) {
 
 							button("Run").action {
-								rowItem.shouldRunSecondLottery = controller.shouldRunSecondLottery(rowItem)
+								rowItem.shouldRunSecondLottery = !rowItem.firstLotteryResult && rowItem.populationGroup.categories.isNotEmpty() && rowItem.populationGroup.involvedInSecondLottery
 								rowItem.hasRunFirstLottery = true
 								text = it.toString()
 								this.removeFromParent()
