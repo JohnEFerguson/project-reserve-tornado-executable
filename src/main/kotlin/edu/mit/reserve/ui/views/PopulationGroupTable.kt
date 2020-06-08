@@ -17,12 +17,12 @@ class PopulationGroupTable : View() {
 
 		tableview(configurationController.populationGroups) {
 
-			prefHeight = 400.0
+			prefHeight = 450.0
 			prefWidth = 400.0
 
 			isEditable = true
 
-			column("Name", PopulationGroup::categoryNames).remainingWidth().cellFormat {
+			column("Population Group", PopulationGroup::categoryNames).remainingWidth().cellFormat {
 				it ->
 				var formatted = ""
 				it.forEach { formatted += "$it, "}

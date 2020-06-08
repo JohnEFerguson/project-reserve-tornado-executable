@@ -28,12 +28,11 @@ class CateogoryTable: View() {
 				textAlignment = TextAlignment.CENTER
 			}
 
-			column("Name", Category::name).makeEditable().remainingWidth()
-			column("Odds", Category::odds).contentWidth(40.0, true, false).cellFragment(CategoryTableNumberEditor::class)
-			column("First", Category::isFirst).makeEditable().contentWidth(40.0, true, false)
+			column("Reserve Name ", Category::name).makeEditable().remainingWidth()
+			column("Odds Adj", Category::odds).contentWidth(40.0, true, false).cellFragment(CategoryTableNumberEditor::class)
+			column("First Lottery", Category::isFirst).makeEditable().contentWidth(40.0, true, false)
 
 			enableCellEditing()
-			enableDirtyTracking()
 
 			columnResizePolicy = SmartResize.POLICY
 
@@ -41,12 +40,13 @@ class CateogoryTable: View() {
 				configurationController.updatePopulationGroups()
 
 				if (it.isFirst) {
-					configurationController.updateIsFirstCategories(it.name)
+					configurationController.selectedFirstCategory.value = true
 				}
+
+				configurationController.updateIsFirstCategories(it.name)
 
 				refresh()
 			}
-
 
 			categoryTableEditModel = editModel
 		}

@@ -28,32 +28,40 @@ class PatientList : View() {
 
 				items = controller.patients
 
-				prefWidth = 800.0
-				prefHeight = 560.0
+				prefWidth = 850.0
+				prefHeight = 620.0
+				addClass(heading)
 
 				columnResizePolicy = SmartResize.POLICY
 
-				readonlyColumn("Id", Patient::id).contentWidth(30.0, true, false)
-				readonlyColumn("Name", Patient::name).contentWidth(70.0, true, false)
-				readonlyColumn("Categories", Patient::populationGroup).contentWidth(30.0, true, false)
+				readonlyColumn("Patient ID", Patient::id).contentWidth(15.0, true, false)
+				readonlyColumn("Patient Name", Patient::name).contentWidth(50.0, true, false)
+				readonlyColumn("Category Membership", Patient::populationGroup).contentWidth(30.0, true, false)
 				readonlyColumn("Date", Patient::date).contentWidth(30.0, true, true)
 
-				column("1st Lottery", Patient::firstLotteryResult).contentWidth(20.0).cellFormat {
+				column("1st Lottery", Patient::firstLotteryResult).contentWidth(40.0).cellFormat {
 
 					text = ""
 
 					if (!rowItem.hasRunFirstLottery) {
 
+
 						graphic = hbox(spacing = 5) {
 
-							button("Run").action {
-								rowItem.shouldRunSecondLottery = !rowItem.firstLotteryResult && rowItem.populationGroup.categories.isNotEmpty() && rowItem.populationGroup.involvedInSecondLottery
-								rowItem.hasRunFirstLottery = true
-								text = it.toString()
-								this.removeFromParent()
-								refresh()
+							button("      Run      ") {
+
+								useMaxWidth = true
+
+								action {
+									rowItem.shouldRunSecondLottery = !rowItem.firstLotteryResult && rowItem.populationGroup.categories.isNotEmpty() && rowItem.populationGroup.involvedInSecondLottery
+									rowItem.hasRunFirstLottery = true
+									text = it.toString()
+									this.removeFromParent()
+									refresh()
+								}
 							}
 						}
+
 					} else if (rowItem.firstLotteryResult) {
 
 						graphic = hbox(spacing = 5) {
@@ -82,16 +90,21 @@ class PatientList : View() {
 					}
 				}
 
-				column("2nd Lottery", Patient::secondLotteryResult).contentWidth(20.0).cellFormat {
+				column("2nd Lottery", Patient::secondLotteryResult).contentWidth(40.0).cellFormat {
 					text = ""
 					if (rowItem.shouldRunSecondLottery) {
 						graphic = hbox(spacing = 5) {
-							button("Run").action {
-								rowItem.hasRunSecondLottery = true
-								rowItem.shouldRunSecondLottery = false
-								text = it.toString()
-								this.removeFromParent()
-								refresh()
+							button("      Run      ") {
+
+								useMaxWidth = true
+
+								action {
+									rowItem.hasRunSecondLottery = true
+									rowItem.shouldRunSecondLottery = false
+									text = it.toString()
+									this.removeFromParent()
+									refresh()
+								}
 							}
 						}
 					} else if (rowItem.hasRunSecondLottery && rowItem.secondLotteryResult) {
@@ -122,11 +135,13 @@ class PatientList : View() {
 				}
 
 
-				column("Accept", Patient::accepted).contentWidth(20.0).cellFormat {
+				column("Final Result", Patient::accepted).contentWidth(40.0).cellFormat {
 					text = ""
 					if (controller.globalSupply > 0 && !rowItem.chosenToAcceptOrNot && ((rowItem.firstLotteryResult && rowItem.hasRunFirstLottery) || (rowItem.secondLotteryResult && rowItem.hasRunSecondLottery))) {
 						graphic = hbox(spacing = 5) {
-							button("Accept").action {
+							button("  Accept  ").action {
+
+
 								rowItem.accepted = true
 								text = rowItem.accepted.toString()
 								rowItem.chosenToAcceptOrNot = true
@@ -134,8 +149,8 @@ class PatientList : View() {
 								controller.globalSupply -= 1
 								controller.coursesUsed += 1
 
-								model.numCoursesAvailable.value = "Number of courses available: ${controller.globalSupply.value}"
-								model.numPatients.value = "Number of patients accepted: ${controller.coursesUsed.value}"
+								model.numCoursesAvailable.value = "${controller.globalSupply.value}"
+								model.numPatients.value = "${controller.coursesUsed.value}"
 								this.removeFromParent()
 								refresh()
 							}

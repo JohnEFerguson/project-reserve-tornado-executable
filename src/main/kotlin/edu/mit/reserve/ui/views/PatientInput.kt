@@ -3,10 +3,11 @@ package edu.mit.reserve.ui.views
 import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.ui.controllers.LotteryController
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
+import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.stage.StageStyle
 import tornadofx.*
 import java.time.LocalDate
@@ -16,9 +17,6 @@ import kotlin.collections.HashMap
 class PatientInput : View() {
 
 	private val controller: LotteryController by inject()
-	private val patientId = SimpleStringProperty()
-	private val patientName = SimpleStringProperty()
-	private val date = SimpleObjectProperty<LocalDate>()
 	private val categoryToStatus = HashMap<Category, SimpleBooleanProperty>()
 	val model: GlobalLotteryView by inject()
 	val patientValuesModel: PatientInputFieldsModel by inject()
@@ -36,7 +34,7 @@ class PatientInput : View() {
 			fieldset {
 				text = "Input a patient"
 
-				field("Patient Id:") {
+				field("Patient ID:") {
 					textfield(patientValuesModel.patientId) {
 						validator {
 							if (it.isNullOrBlank()) error("This field cannot be blank.")
@@ -78,6 +76,8 @@ class PatientInput : View() {
 
 					enableWhen(patientValuesModel.valid)
 
+					tooltip("Enter patient into database")
+
 					useMaxWidth = true
 
 
@@ -93,14 +93,45 @@ class PatientInput : View() {
 					}
 				}
 
-				vbox(5.0) {
+				vbox(35.0) {
 
-					label {
-						textProperty().bind(model.numCoursesAvailable)
+					vbox(5.0) {
+
+
+						label {
+
+							text = "Number of courses available:"
+
+							font = Font.font("Cambria", FontWeight.BOLD, 16.0)
+
+						}
+
+
+						label {
+
+							textProperty().bind(model.numCoursesAvailable)
+
+							font = Font.font("Cambria", FontWeight.EXTRA_BOLD, 30.0)
+
+						}
 					}
 
-					label {
-						textProperty().bind(model.numPatients)
+
+					vbox(5.0) {
+
+						label {
+
+							text = "Number of patients accepting drugs:"
+
+							font = Font.font("Cambria", FontWeight.BOLD, 16.0)
+
+						}
+
+						label {
+							textProperty().bind(model.numPatients)
+
+							font = Font.font("Cambria", FontWeight.EXTRA_BOLD, 30.0)
+						}
 					}
 				}
 
@@ -113,9 +144,9 @@ class PatientInput : View() {
 
 						button("Return To Config") {
 
-							useMaxWidth = true
+							tooltip("Return to configuration page")
 
-							tooltip("OHH BABY")
+							useMaxWidth = true
 
 							action {
 								find<PatientPage>().close()
@@ -125,6 +156,8 @@ class PatientInput : View() {
 
 
 						button("View Cutoffs") {
+
+							tooltip("View cutoffs for both lotteries")
 
 							useMaxWidth = true
 
@@ -136,6 +169,8 @@ class PatientInput : View() {
 
 
 						button("Clear Patient List") {
+
+							tooltip("Warning: patient list permanently deleted")
 
 							useMaxWidth = true
 

@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleSetProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableSet
+import javafx.scene.control.CheckBox
 import tornadofx.*
 import kotlin.math.min
 import kotlin.math.pow
@@ -23,7 +24,7 @@ class ConfigurationController : Controller() {
 
 	var categories = SimpleListProperty<Category>(observableListOf())
 	var populationGroups = SimpleListProperty<PopulationGroup>(observableListOf())
-
+	val selectedFirstCategory = SimpleBooleanProperty(false)
 
 	init {
 
@@ -36,6 +37,8 @@ class ConfigurationController : Controller() {
 				categoryList.add(Category("", "0", false))
 
 			categories.value = observableListOf(categoryList)
+
+			updatePopulationGroups()
 		}
 
 
@@ -43,8 +46,15 @@ class ConfigurationController : Controller() {
 
 	fun updateIsFirstCategories(name: String) {
 
+		var allDeselected = true
+
 		categories.forEach {
 			if (it.name != name) it.isFirst = false
+			if (it.isFirst) allDeselected = false
+		}
+
+		if (allDeselected) {
+			selectedFirstCategory.value = false
 		}
 	}
 
@@ -71,8 +81,8 @@ class ConfigurationController : Controller() {
 
 		lotteryController.globalSupply.value = numCoursesAvailable
 
-		inputModel.numCoursesAvailable.value = "Number of courses available: ${lotteryController.globalSupply.value}"
-		inputModel.numPatients.value = "Number of patients who have accepted: 0"
+		inputModel.numCoursesAvailable.value = "${lotteryController.globalSupply.value}"
+		inputModel.numPatients.value = "0"
 	}
 }
 
