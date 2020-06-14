@@ -1,14 +1,8 @@
 package edu.mit.reserve.ui.views
 
-import edu.mit.reserve.ui.controllers.ConfigurationController
 import tornadofx.*
 
 class ConfigurationRight : View() {
-
-	private val configurationController: ConfigurationController by inject()
-	private val model: GlobalValueConfigValueModel by inject()
-	private val categoryListModel: CategoryModel by inject()
-	private val populationGroupListModel: PopulationGroupModel by inject()
 
 	override val root = vbox {
 
@@ -24,11 +18,7 @@ class ConfigurationRight : View() {
 				style {
 					padding = box(5.px)
 				}
-
-
 			}
-
-
 		}
 	}
 }

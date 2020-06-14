@@ -43,7 +43,9 @@ class CateogoryTable: View() {
 					configurationController.selectedFirstCategory.value = true
 				}
 
-				configurationController.updateIsFirstCategories(it.name)
+				configurationController.updateCategoryCheckboxes(it)
+
+
 
 				refresh()
 			}
@@ -61,6 +63,14 @@ class Category(name: String, odds: String, isFirst: Boolean) {
 	var odds by oddsProperty
 	val isFirstProperty = SimpleBooleanProperty(this, "isFirst", isFirst)
 	var isFirst by isFirstProperty
+
+	override fun toString() = nameProperty.value
+
+	override fun equals(other: Any?) = this.toString() == other.toString()
+
+	override fun hashCode(): Int {
+		return nameProperty.value.hashCode()
+	}
 }
 
 class CategoryModel : ItemViewModel<Category>() {

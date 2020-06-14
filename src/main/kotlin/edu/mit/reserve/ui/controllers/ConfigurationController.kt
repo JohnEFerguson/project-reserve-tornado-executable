@@ -5,12 +5,7 @@ import edu.mit.reserve.ui.views.GlobalLotteryView
 import edu.mit.reserve.ui.views.GlobalValueConfigValueModel
 import edu.mit.reserve.ui.views.PopulationGroup
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
-import javafx.beans.property.SimpleSetProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.collections.ObservableSet
-import javafx.scene.control.CheckBox
 import tornadofx.*
 import kotlin.math.min
 import kotlin.math.pow
@@ -30,13 +25,18 @@ class ConfigurationController : Controller() {
 
 		model.numCategories.onChange {
 
-			val limit = min(it!!.toInt(), categories.value.size)
-			val categoryList = categories.value.subList(0, limit)
+//			val limit = min(it!!.toInt(), categories.value.size)
+//			val categoryList = categories.value.subList(0, limit)
+//
+//			for (i in categoryList.size until it.toInt())
+//				categoryList.add(Category("", "0", false))
 
-			for (i in categoryList.size until it.toInt())
-				categoryList.add(Category("", "0", false))
+			val categoryList = mutableListOf<Category>()
+			for (i in 0 until it!!.toInt()) categoryList.add(Category("", "0", false))
 
 			categories.value = observableListOf(categoryList)
+
+			selectedFirstCategory.value = false
 
 			updatePopulationGroups()
 		}
@@ -44,18 +44,35 @@ class ConfigurationController : Controller() {
 
 	}
 
-	fun updateIsFirstCategories(name: String) {
+	fun updateCategoryCheckboxes(changedCategory: Category) {
 
-		var allDeselected = true
+		// given a change to a row
+		// maintain that
+		//   if change is that row has become checked -> uncheck the box currently checked
+		//   if a box is checked set //			selectedFirstCategory.value = true else false
+
+		if (changedCategory.isFirst) {
+			categories.forEach {
+				if (it != changedCategory) it.isFirst = false // uncheck everything else
+			}
+		}
+
+		selectedFirstCategory.value = false
 
 		categories.forEach {
-			if (it.name != name) it.isFirst = false
-			if (it.isFirst) allDeselected = false
+			if (changedCategory.isFirst && it != changedCategory) it.isFirst = false // uncheck everything else
+			selectedFirstCategory.value = it.isFirst || selectedFirstCategory.value
 		}
 
-		if (allDeselected) {
+		// handle uniqueness
+		val uniqueCategories = mutableSetOf<Category>()
+		categories.forEach { uniqueCategories.add(it) }
+		if (uniqueCategories.size != categories.size) {
+			categories.forEach { it.isFirst = false }
 			selectedFirstCategory.value = false
 		}
+
+
 	}
 
 	fun updatePopulationGroups() {
@@ -83,6 +100,9 @@ class ConfigurationController : Controller() {
 
 		inputModel.numCoursesAvailable.value = "${lotteryController.globalSupply.value}"
 		inputModel.numPatients.value = "0"
+
+		lotteryController.clearPatients()
+		lotteryController.clearPatientInputFields()
 	}
 }
 
