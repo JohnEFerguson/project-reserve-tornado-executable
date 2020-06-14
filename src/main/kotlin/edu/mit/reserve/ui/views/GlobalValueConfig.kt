@@ -27,7 +27,7 @@ class GlobalValueConfig : View() {
 			field("Estimated total number of patients needing remdesivir:") {
 				textfield(model.numPatients) {
 					validator {
-						if (it.isNullOrBlank() || !it.isInt() || it.toInt() < 0) error("Add a whole number > 0")
+						if (it.isNullOrBlank() || !it.isInt() || it.toInt() < 0) error("Add a positive whole number")
 						else null
 					}
 				}
@@ -36,7 +36,7 @@ class GlobalValueConfig : View() {
 			field("Number of courses to be distributed:") {
 				textfield(model.numCoursesAvailable) {
 					validator {
-						if (it.isNullOrBlank() || !it.isInt() || it.toInt() < 0) error("Add a whole number > 0")
+						if (it.isNullOrBlank() || !it.isInt() || it.toInt() < 0) error("Add a positive whole number")
 						else null
 					}
 				}

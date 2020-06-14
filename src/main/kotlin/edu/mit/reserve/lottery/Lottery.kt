@@ -140,7 +140,6 @@ class Lottery(
 	fun getPopulationGroupCutoff(group: PopulationGroup): Double = this.secondLotteryCutoffs[group]!! // Todo: should throw exception here
 	fun getCategories() = this.categories
 	fun getPopulationGroups() = this.populationGroups
-	fun getPatients() = this.patients
 	fun getGlobalSupply() = this.globalSupply
 	fun getFirstCategory() = this.firstLotteryCategory
 

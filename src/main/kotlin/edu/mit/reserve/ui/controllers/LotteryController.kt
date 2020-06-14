@@ -5,6 +5,7 @@ import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.lottery.models.Patient
 import edu.mit.reserve.lottery.models.PopulationGroup
 import edu.mit.reserve.lottery.utils.roundDouble
+import edu.mit.reserve.ui.views.PatientInputFieldsModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
@@ -12,6 +13,8 @@ import tornadofx.*
 import java.time.LocalDate
 
 class LotteryController: Controller() {
+
+	val patientValuesModel: PatientInputFieldsModel by inject()
 
 	private val lottery: Lottery = Lottery()
 
@@ -24,10 +27,7 @@ class LotteryController: Controller() {
 		lottery.setFirstCategoryByName(name)
 	}
 
-	fun getFirstCategory() = lottery.getFirstCategory()
-
 	fun getPopulationGroups() = lottery.getPopulationGroups()
-	fun getNumCategories() = lottery.getNumCategories()
 	fun getCategories() = lottery.getCategories()
 
 	fun addCategory(name: String, oddsPercentage: Int) { lottery.addCategory(name, oddsPercentage) }
@@ -65,8 +65,17 @@ class LotteryController: Controller() {
 		patients.value = FXCollections.observableArrayList()
 	}
 
+
 	val globalSupply = SimpleIntegerProperty(lottery.getGlobalSupply())
 	val coursesUsed = SimpleIntegerProperty(0)
+
+	fun clearPatientInputFields() {
+
+		patientValuesModel.patientId.value = ""
+		patientValuesModel.patientName.value = ""
+		patientValuesModel.date.value = LocalDate.now()
+		patientValuesModel.categories.value.clear()
+	}
 }
 
 class FirstLotteryCutoffRow(val name: String, val cutOff: String)

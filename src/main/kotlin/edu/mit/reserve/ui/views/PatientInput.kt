@@ -4,6 +4,7 @@ import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.ui.controllers.LotteryController
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleSetProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.text.Font
@@ -83,13 +84,17 @@ class PatientInput : View() {
 
 					action {
 
-						val categories = mutableSetOf<Category>()
 						categoryToStatus.keys.forEach {
-							if (categoryToStatus[it]!!.value) categories.add(it)
+							if (categoryToStatus[it]!!.value) patientValuesModel.categories.value.add(it)
 						}
 
-						println(patientValuesModel.patientId.value + " " + patientValuesModel.patientName.value)
-						controller.addPatient(patientValuesModel.patientId.value, patientValuesModel.patientName.value, categories, patientValuesModel.date.value)
+						controller.addPatient(patientValuesModel.patientId.value, patientValuesModel.patientName.value, patientValuesModel.categories.value, patientValuesModel.date.value)
+
+						categoryToStatus.keys.forEach {
+							categoryToStatus[it]!!.value = false
+						}
+
+						controller.clearPatientInputFields()
 					}
 				}
 
@@ -209,10 +214,14 @@ class PatientInputFields(patientId: String, patientName: String, date: LocalDate
 
 	val dateProperty by lazy { SimpleObjectProperty<LocalDate>(date) }
 	var date by dateProperty
+
+	val categoriesProperty by lazy { SimpleSetProperty<Category>() }
+	var categories by categoriesProperty
 }
 
 class PatientInputFieldsModel : ItemViewModel<PatientInputFields>() {
 	val patientId = bind(PatientInputFields::patientIdProperty)
 	val patientName = bind(PatientInputFields::patientNameProperty)
 	val date = bind(PatientInputFields::dateProperty)
+	val categories = bind(PatientInputFields::categoriesProperty)
 }
