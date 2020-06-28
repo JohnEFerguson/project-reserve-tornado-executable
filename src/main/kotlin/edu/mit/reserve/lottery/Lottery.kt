@@ -3,7 +3,6 @@ package edu.mit.reserve.lottery
 import edu.mit.reserve.lottery.models.Category
 import edu.mit.reserve.lottery.models.Patient
 import edu.mit.reserve.lottery.models.PopulationGroup
-import edu.mit.reserve.lottery.utils.generatePopulationGroups
 import edu.mit.reserve.lottery.utils.roundDouble
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
@@ -18,10 +17,6 @@ class Lottery(
 	private var firstLotteryCategory: Category = Category("foo", 0.0)
 ) {
 
-	private val log: Logger = LogManager.getLogger(Lottery::class.java)
-
-	private val patientToFirstLotteryResults = HashMap<Patient, Boolean>()
-	private val patientToSecondLotteryResults = HashMap<Patient, Boolean>()
 	private val categories = mutableListOf<Category>()
 	private val nameCategoryMapping = HashMap<String, Category>()
 
@@ -119,7 +114,7 @@ class Lottery(
 
 		val categories = mutableSetOf<Category>()
 		categoryNames.forEach { categories.add(nameCategoryMapping[it]!!) }
-		val newPopulationGroup = PopulationGroup(categories)
+		val newPopulationGroup = PopulationGroup(categories, demand)
 		if ((categories.size == 1 && categories.contains(firstLotteryCategory)) || categories.size == 0)
 			newPopulationGroup.involvedInSecondLottery = false
 		populationGroups.add(newPopulationGroup)
@@ -133,7 +128,6 @@ class Lottery(
 		this.firstLotteryCategory = nameCategoryMapping[name] ?: throw IllegalArgumentException("There must be a category with name $name")
 	}
 
-	fun getNumCategories() = this.numCategories
 	fun getFirstLotteryCategoryCutoff(): Double = this.firstLotteryCategoryCutoff
 	fun getNonFirstLotteryCategoryCutoff(): Double = this.nonFirstLotteryCategoryCutoff
 	fun getPg(): Double = this.pg
@@ -141,6 +135,7 @@ class Lottery(
 	fun getCategories() = this.categories
 	fun getPopulationGroups() = this.populationGroups
 	fun getGlobalSupply() = this.globalSupply
+	fun getGlobalDemand() = this.globalDemand
 	fun getFirstCategory() = this.firstLotteryCategory
 
 	fun clearCategoriesAndGroups() {

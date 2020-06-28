@@ -1,10 +1,10 @@
 package edu.mit.reserve.lottery.models
 
 import kotlin.math.max
-import kotlin.math.min
 
 class PopulationGroup(
-	val categories: Set<Category> = setOf()
+	val categories: Set<Category> = setOf(),
+	val demand: Int
 ) {
 
 	var firstCutoff = ""

@@ -15,7 +15,7 @@ import java.time.LocalDate
 import kotlin.collections.HashMap
 
 
-class PatientInput : View() {
+class PatientInput : Fragment() {
 
 	private val controller: LotteryController by inject()
 	private val categoryToStatus = HashMap<Category, SimpleBooleanProperty>()
@@ -144,25 +144,24 @@ class PatientInput : View() {
 
 					alignment = Pos.BOTTOM_CENTER
 
-					hbox(spacing = 20.0) {
+					hbox(spacing = 7.0) {
 
 
-						button("Return To Config") {
+						button("View Config") {
 
-							tooltip("Return to configuration page")
+							tooltip("View configuration for lottery.")
 
 							useMaxWidth = true
 
 							action {
-								find<PatientPage>().close()
-								find<ConfigurationPage>().openWindow()
+								find<ConfigModalView>().openModal(stageStyle = StageStyle.UTILITY)
 							}
 						}
 
 
 						button("View Cutoffs") {
 
-							tooltip("View cutoffs for both lotteries")
+							tooltip("View cutoffs for both lotteries.")
 
 							useMaxWidth = true
 
@@ -175,13 +174,24 @@ class PatientInput : View() {
 
 						button("Clear Patient List") {
 
-							tooltip("Warning: patient list permanently deleted")
+							tooltip("Warning: patient list permanently deleted.")
 
 							useMaxWidth = true
 
 							action {
 								controller.clearPatients()
 								// reset supply here
+							}
+						}
+
+						button("Export To CSV") {
+
+							tooltip("Export patient data as a .csv in current directory.")
+
+							useMaxWidth = true
+
+							action {
+								controller.exportToCSV()
 							}
 						}
 					}

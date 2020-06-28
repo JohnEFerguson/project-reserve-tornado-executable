@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.text.TextAlignment
 import tornadofx.*
 
-class CateogoryTable: View() {
+class CategoryTable: View() {
 
 	private val configurationController: ConfigurationController by inject()
 	private var categoryTableEditModel: TableViewEditModel<Category> by singleAssign()

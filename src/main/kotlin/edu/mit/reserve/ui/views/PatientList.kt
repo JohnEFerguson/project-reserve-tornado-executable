@@ -10,9 +10,9 @@ class PatientList : View() {
 
 	private val controller: LotteryController by inject()
 	private var populationGroupTableEditModel: TableViewEditModel<Patient> by singleAssign()
-	val model: GlobalLotteryView by inject()
+	private val model: GlobalLotteryView by inject()
 
-	fun roundDouble(x: Double) = round(x * 100.0) / 100.0
+	private fun roundDouble(x: Double) = round(x * 100.0) / 100.0
 
 	override val root = form()
 
@@ -28,18 +28,19 @@ class PatientList : View() {
 
 				items = controller.patients
 
-				prefWidth = 850.0
+				prefWidth = 870.0
 				prefHeight = 620.0
 				addClass(heading)
 
 				columnResizePolicy = SmartResize.POLICY
 
+
 				readonlyColumn("Patient ID", Patient::id).contentWidth(15.0, true, false)
-				readonlyColumn("Patient Name", Patient::name).contentWidth(50.0, true, false)
+				readonlyColumn("Patient Name", Patient::name).contentWidth(45.0, true, false)
 				readonlyColumn("Category Membership", Patient::populationGroup).contentWidth(30.0, true, false)
 				readonlyColumn("Date", Patient::date).contentWidth(30.0, true, true)
 
-				column("1st Lottery", Patient::firstLotteryResult).contentWidth(40.0).cellFormat {
+				column(" 1st Lottery ", Patient::firstLotteryResult).contentWidth(40.0).cellFormat {
 
 					text = ""
 
@@ -90,7 +91,7 @@ class PatientList : View() {
 					}
 				}
 
-				column("2nd Lottery", Patient::secondLotteryResult).contentWidth(40.0).cellFormat {
+				column(" 2nd Lottery ", Patient::secondLotteryResult).contentWidth(40.0).cellFormat {
 					text = ""
 					if (rowItem.shouldRunSecondLottery) {
 						graphic = hbox(spacing = 5) {
@@ -135,9 +136,10 @@ class PatientList : View() {
 				}
 
 
-				column("Final Result", Patient::accepted).contentWidth(40.0).cellFormat {
+				column(" Final Result ", Patient::accepted).contentWidth(40.0).cellFormat {
 					text = ""
 					if (controller.globalSupply > 0 && !rowItem.chosenToAcceptOrNot && ((rowItem.firstLotteryResult && rowItem.hasRunFirstLottery) || (rowItem.secondLotteryResult && rowItem.hasRunSecondLottery))) {
+						rowItem.hasBeenGivenTheOpportunityToAcceptOrNot = true
 						graphic = hbox(spacing = 5) {
 							button("  Accept  ").action {
 
@@ -180,6 +182,35 @@ class PatientList : View() {
 						}
 					}
 				}
+
+				column("", Patient::firstLotteryResult).contentWidth(4.0).cellFormat {
+
+					text = ""
+
+					graphic = hbox(spacing = 0) {
+
+						button("X") {
+
+							tooltip("Warning: patient data permanently deleted.")
+
+							useMaxWidth = true
+
+							action {
+
+								if (rowItem.accepted) {
+									controller.globalSupply += 1
+									controller.coursesUsed -= 1
+									model.numCoursesAvailable.value = "${controller.globalSupply.value}"
+									model.numPatients.value = "${controller.coursesUsed.value}"
+								}
+
+								controller.deletePatient(rowItem.primaryId)
+								refresh()
+							}
+						}
+					}
+				}
+
 			}
 
 		}

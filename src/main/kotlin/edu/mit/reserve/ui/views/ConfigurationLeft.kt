@@ -12,6 +12,6 @@ class ConfigurationLeft : View() {
 		}
 
 		add(GlobalValueConfig::class)
-		add(CateogoryTable::class)
+		add(CategoryTable::class)
 	}
 }
