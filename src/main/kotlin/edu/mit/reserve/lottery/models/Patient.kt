@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 
 class Patient(
+	val primaryId: Int,
 	val id: String,
 	val name: String,
 	var populationGroup: PopulationGroup,
@@ -20,4 +21,5 @@ class Patient(
 	var hasRunSecondLottery = false
 	var accepted = false
 	var chosenToAcceptOrNot = false
+	var hasBeenGivenTheOpportunityToAcceptOrNot = false
 }
