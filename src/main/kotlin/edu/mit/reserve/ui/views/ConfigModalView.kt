@@ -7,7 +7,7 @@ import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
-class ConfigModalView : Fragment("Lottery Configuratione") {
+class ConfigModalView : Fragment("Lottery Configuration") {
 
 	val lotteryController: LotteryController by inject()
 
