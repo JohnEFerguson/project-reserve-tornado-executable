@@ -30,7 +30,6 @@ class Lottery(
 	private var firstLotteryCategoryCutoff = 0.0
 	private var nonFirstLotteryCategoryCutoff = 0.0
 	private val secondLotteryCutoffs = HashMap<PopulationGroup, Double>()
-	private val patients = mutableListOf<Patient>()
 
 	fun addPopulationGroupDemand(populationGroup: PopulationGroup, demand: Int) {
 		populationGroupDemands[populationGroup] = demand
@@ -104,12 +103,23 @@ class Lottery(
 
 
 	fun addCategory(name: String, oddsPercentage: Int) {
+
 		val newCategory = Category(name = name, odds = oddsPercentage.toDouble() / 100.0)
 		categories.add(newCategory)
 		nameCategoryMapping.put(name, newCategory)
-
 	}
 
+	fun getPopulationGroup(categories: Set<Category>): PopulationGroup {
+		
+		for (pGroup in getPopulationGroups()) {
+			if (categories.sortedBy { it.toString() }.toString() == pGroup.categories.sortedBy { it.toString() }.toString()) {
+				return pGroup
+			}
+		}
+
+		throw IllegalArgumentException("There is no matching population group for the given list of categories.")
+	}
+	
 	fun addPopulationGroup(categoryNames: Set<String>, demand: Int) {
 
 		val categories = mutableSetOf<Category>()

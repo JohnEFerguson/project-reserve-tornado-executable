@@ -42,12 +42,7 @@ class LotteryController: Controller() {
 
 	fun addPatient(id: String, name: String, categories: Set<Category>, date: LocalDate) {
 
-		var populationGroup = PopulationGroup(categories, 0)
-		lottery.getPopulationGroups().forEach(fun(it: PopulationGroup) {
-			if (categories.sortedBy { it.toString() }.toString() == it.categories.sortedBy { it.toString() }.toString()) populationGroup = it
-		})
-
-		val newPatient = Patient(newPatientId, id, name, populationGroup, date)
+		val newPatient = Patient(newPatientId, id, name, lottery.getPopulationGroup(categories), date)
 		newPatient.firstLotteryResult = lottery.firstLottery(newPatient)
 		newPatient.secondLotteryResult = newPatient.populationGroup.categories.isNotEmpty() && newPatient.populationGroup.involvedInSecondLottery && lottery.secondLottery(newPatient)
 		val curPatients = patients.toMutableList()
